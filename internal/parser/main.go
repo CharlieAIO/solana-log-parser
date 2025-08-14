@@ -14,14 +14,7 @@ func ParseTransactionLogs(logs []string) map[int8]map[int8][]structs.LogEntry {
 	invokeRegex := regexp.MustCompile(`^Program (.+) invoke \[(\d+)]`)
 	successRegex := regexp.MustCompile(`^Program (.+) success`)
 
-	type CallFrame struct {
-		ProgramID             string
-		Depth                 int
-		InstructionIndex      int8
-		InnerInstructionIndex int8
-	}
-
-	var callStack []CallFrame
+	var callStack []structs.CallFrame
 	instructionIndex := int8(-1)
 	innerInstructionIndex := int8(-1)
 
@@ -62,7 +55,7 @@ func ParseTransactionLogs(logs []string) map[int8]map[int8][]structs.LogEntry {
 				)
 			}
 
-			callStack = append(callStack, CallFrame{
+			callStack = append(callStack, structs.CallFrame{
 				ProgramID:             programID,
 				Depth:                 depth,
 				InstructionIndex:      instructionIndex,
@@ -106,7 +99,7 @@ func ParseTransactionLogs(logs []string) map[int8]map[int8][]structs.LogEntry {
 			continue
 		}
 
-		currentContext := CallFrame{
+		currentContext := structs.CallFrame{
 			InstructionIndex:      instructionIndex,
 			InnerInstructionIndex: -1, // Default to top-level
 			Depth:                 1,
